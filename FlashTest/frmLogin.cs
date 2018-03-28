@@ -83,7 +83,7 @@ namespace FlashTest
                 return false;
             }
         }
-
+      
         //define control method
         private void btnCancel_Click(object sender, EventArgs e)//close the login form
         {
@@ -118,6 +118,8 @@ namespace FlashTest
 
             if (LoginInfoCheck(txtUser.Text.Trim(), txtPwd.Text.Trim()))
             {
+                frmMain frm = new frmMain();
+                frm.Show();
                 this.Hide();
             }
             else MessageBox.Show("Username and Password is not correct");
