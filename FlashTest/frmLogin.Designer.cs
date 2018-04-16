@@ -133,7 +133,7 @@
             this.txtIP.Name = "txtIP";
             this.txtIP.Size = new System.Drawing.Size(161, 27);
             this.txtIP.TabIndex = 0;
-            this.txtIP.Text = "192.168.0.100";
+            this.txtIP.Text = "192.168.56.1";
             // 
             // txtPort
             // 

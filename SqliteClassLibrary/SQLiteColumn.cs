@@ -24,14 +24,6 @@ namespace System.Data.SQLite
             AutoIncrement = false;
         }
 
-        public SQLiteColumn(string colName, ColType colDataType)
-        {
-            ColumnName = colName;
-            PrimaryKey = false;
-            ColDataType = colDataType;
-            AutoIncrement = false;
-        }
-
         public SQLiteColumn(string colName, bool autoIncrement)
         {
             ColumnName = colName;
