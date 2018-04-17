@@ -17,6 +17,9 @@ namespace FlashTest
         private Boolean TypeFirstChangeFlag = false;
         private Boolean AlgFirstChangeFlag = false;
 
+        BindingSource DeveiceTypeBS = new BindingSource();
+        BindingSource AlgBS = new BindingSource();
+
         private const int SendBufferSize = 2 * 1024;
         private const int ReceiveBufferSize = 8 * 1024;
         private string strRecMsg = null;
@@ -166,7 +169,6 @@ namespace FlashTest
         }
         private void CreateTable(string filename)// read file create database table
         {
-            config.DatabaseFile = "database.sqlite";
             using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
             {
                 using (SQLiteCommand cmd = new SQLiteCommand())
@@ -208,7 +210,6 @@ namespace FlashTest
         }
         private Boolean CheckExistTable(string filename)// read file create database table
         {
-            config.DatabaseFile = "database.sqlite";
             using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
             {
                 using (SQLiteCommand cmd = new SQLiteCommand())
@@ -243,7 +244,6 @@ namespace FlashTest
         }
         private void InsertCmdRow(List<string> objListCmd, string filename)// read file return student list
         {
-            config.DatabaseFile = "database.sqlite";
             using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
             {
                 using (SQLiteCommand cmd = new SQLiteCommand())
@@ -302,12 +302,14 @@ namespace FlashTest
                         DataTable dt = sh.GetTableList();
                         dt.Rows.Remove(dt.Rows[0]);
                         dt.Rows.Remove(dt.Rows[0]);
-                        cboDeviceType.DataSource = dt;
+                        DeveiceTypeBS.DataSource = dt;
+                        cboDeviceType.DataSource = DeveiceTypeBS;
                         cboDeviceType.ValueMember = dt.Columns[0].ColumnName;
                         
                         string Query = string.Format("SELECT distinct cmdtype FROM {0};", cboDeviceType.SelectedValue.ToString());
                         DataTable dt2 = sh.Select(Query);
-                        cboAlg.DataSource = dt2;
+                        AlgBS.DataSource = dt2;
+                        cboAlg.DataSource = AlgBS;
                         cboAlg.ValueMember = dt2.Columns[0].ColumnName;
 
                         conn.Close();
@@ -320,10 +322,40 @@ namespace FlashTest
             }
 
         }
+        private void UpdateAlgList()
+        {
+            try
+            {
+                using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
+                {
+                    using (SQLiteCommand cmd = new SQLiteCommand())
+                    {
+                        conn.Open();
+                        cmd.Connection = conn;
+
+                        SQLiteHelper sh = new SQLiteHelper(cmd);
+
+                        string Query = string.Format("SELECT distinct cmdtype FROM {0};", cboDeviceType.SelectedValue.ToString());
+                        DataTable dt3 = sh.Select(Query);
+
+                        AlgBS.DataSource = dt3;
+                        AlgBS.ResetBindings(false);
+                        conn.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+        }
+
         private void cboDeviceType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (TypeFirstChangeFlag)
             {
+                UpdateAlgList();
                 GetStatus();
             }
             else TypeFirstChangeFlag = true;
