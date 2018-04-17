@@ -12,12 +12,16 @@ namespace FlashTest
     {
         public string fullPath = string.Empty;
         public string filename = string.Empty;
+        private Boolean TypeFirstChangeFlag = false;
+        private Boolean AlgFirstChangeFlag = false;
+
         private List<string> objListCmd = new List<string>(); //define student info variable
 
         public frmMain()
         {
             InitializeComponent();
             LoadCmdToGrid();
+            GetStatus();
         }
 
         //define control method
@@ -232,13 +236,10 @@ namespace FlashTest
                         cboDeviceType.DataSource = dt;
                         cboDeviceType.ValueMember = dt.Columns[0].ColumnName;
                         
-                        string Query = string.Format("SELECT cmdtype FROM {0};", cboDeviceType.SelectedValue.ToString());
-                        SQLiteCommand createCommand = new SQLiteCommand(Query, conn);
-
-                        createCommand.ExecuteNonQuery();
-                        SQLiteDataReader dr = createCommand.ExecuteReader();
-                        //cboAlg.DataSource = dr;
-                        //cboAlg.ValueMember = dr.Columns[0].ColumnName;
+                        string Query = string.Format("SELECT distinct cmdtype FROM {0};", cboDeviceType.SelectedValue.ToString());
+                        DataTable dt2 = sh.Select(Query);
+                        cboAlg.DataSource = dt2;
+                        cboAlg.ValueMember = dt2.Columns[0].ColumnName;
 
                         conn.Close();
                     }
@@ -252,17 +253,26 @@ namespace FlashTest
         }
         private void cboDeviceType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GetStatus();
+            if (TypeFirstChangeFlag)
+            {
+                GetStatus();
+            }
+            else TypeFirstChangeFlag = true;
         }
         private void cboAlg_SelectedIndexChanged(object sender, EventArgs e)
         {
-            GetStatus();
+            if (AlgFirstChangeFlag)
+            {
+                GetStatus();
+            }
+            else AlgFirstChangeFlag = true;
         }
         private void GetStatus()
         {
             try
             {
                 string tableName = cboDeviceType.SelectedValue + "";
+                string AlgName = cboAlg.SelectedValue + "";
 
                 using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
                 {
@@ -273,7 +283,9 @@ namespace FlashTest
 
                         SQLiteHelper sh = new SQLiteHelper(cmd);
 
-                        DataTable dt = sh.GetColumnStatus(tableName);
+                        string Query = string.Format("SELECT CmdValue FROM {0} WHERE CmdType = '{1}' or CmdType = 'common';", tableName, AlgName);
+                        //SELECT * FROM mircon_1G_cmd WHERE CmdType = 'alg = 1' or CmdType = 'common';
+                        DataTable dt = sh.Select(Query);
                         dgvCmd.DataSource = dt;
 
                         conn.Close();

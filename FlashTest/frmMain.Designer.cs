@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnImportCmd = new System.Windows.Forms.Button();
             this.dgvCmd = new System.Windows.Forms.DataGridView();
             this.cboDeviceType = new System.Windows.Forms.ComboBox();
@@ -52,22 +52,26 @@
             // 
             this.dgvCmd.AllowUserToAddRows = false;
             this.dgvCmd.AllowUserToDeleteRows = false;
+            this.dgvCmd.AllowUserToResizeColumns = false;
+            this.dgvCmd.AllowUserToResizeRows = false;
             this.dgvCmd.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dgvCmd.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvCmd.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvCmd.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvCmd.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvCmd.Location = new System.Drawing.Point(13, 69);
             this.dgvCmd.Margin = new System.Windows.Forms.Padding(4);
             this.dgvCmd.Name = "dgvCmd";
             this.dgvCmd.ReadOnly = true;
             this.dgvCmd.RowHeadersVisible = false;
+            this.dgvCmd.RowHeadersWidth = 430;
+            this.dgvCmd.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgvCmd.Size = new System.Drawing.Size(297, 431);
             this.dgvCmd.TabIndex = 7;
             // 
@@ -85,11 +89,11 @@
             // cboAlg
             // 
             this.cboAlg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboAlg.FormattingEnabled = true;
             this.cboAlg.Location = new System.Drawing.Point(167, 37);
             this.cboAlg.Margin = new System.Windows.Forms.Padding(4);
             this.cboAlg.Name = "cboAlg";
             this.cboAlg.Size = new System.Drawing.Size(143, 24);
+            this.cboAlg.Sorted = true;
             this.cboAlg.TabIndex = 6;
             this.cboAlg.SelectedIndexChanged += new System.EventHandler(this.cboAlg_SelectedIndexChanged);
             // 
