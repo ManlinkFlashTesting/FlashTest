@@ -67,7 +67,7 @@
             this.txtUser.Location = new System.Drawing.Point(194, 110);
             this.txtUser.Name = "txtUser";
             this.txtUser.Size = new System.Drawing.Size(161, 27);
-            this.txtUser.TabIndex = 2;
+            this.txtUser.TabIndex = 3;
             this.txtUser.Text = "admin";
             // 
             // txtPwd
@@ -78,8 +78,9 @@
             this.txtPwd.Name = "txtPwd";
             this.txtPwd.PasswordChar = '*';
             this.txtPwd.Size = new System.Drawing.Size(161, 27);
-            this.txtPwd.TabIndex = 3;
+            this.txtPwd.TabIndex = 0;
             this.txtPwd.UseSystemPasswordChar = true;
+            this.txtPwd.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPwd_KeyDown);
             // 
             // btnOK
             // 
@@ -132,7 +133,7 @@
             this.txtIP.Location = new System.Drawing.Point(194, 30);
             this.txtIP.Name = "txtIP";
             this.txtIP.Size = new System.Drawing.Size(161, 27);
-            this.txtIP.TabIndex = 0;
+            this.txtIP.TabIndex = 1;
             this.txtIP.Text = "192.168.56.1";
             // 
             // txtPort
@@ -142,7 +143,7 @@
             this.txtPort.Location = new System.Drawing.Point(194, 70);
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(161, 27);
-            this.txtPort.TabIndex = 1;
+            this.txtPort.TabIndex = 2;
             this.txtPort.Text = "30";
             // 
             // frmLogin

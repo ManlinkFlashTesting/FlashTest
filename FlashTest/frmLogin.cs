@@ -124,6 +124,38 @@ namespace FlashTest
             }
             else MessageBox.Show("Username and Password is not correct");
         }
+        private void txtPwd_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (txtUser.Text == "")
+                {
+                    MessageBox.Show("Username can not be blank!");
+                    return;
+                }
+                if (txtPwd.Text == "")
+                {
+                    MessageBox.Show("Password can not be blank!");
+                    return;
+                }
 
+                clientIP = txtIP.Text.Trim();
+                clientPort = txtPort.Text.Trim();
+                if (!SocketConnectionCheck(clientIP, clientPort))
+                {
+                    string message = string.Format("TcpClient connection to {0}:{1} timed out", clientIP, clientPort);
+                    MessageBox.Show(message);
+                    return;
+                }
+
+                if (LoginInfoCheck(txtUser.Text.Trim(), txtPwd.Text.Trim()))
+                {
+                    frmMain frm = new frmMain();
+                    frm.Show();
+                    this.Hide();
+                }
+                else MessageBox.Show("Username and Password is not correct");
+            }
+        }
     }
 }
