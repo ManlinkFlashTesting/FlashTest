@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvCmd = new System.Windows.Forms.DataGridView();
             this.cboDeviceType = new System.Windows.Forms.ComboBox();
             this.cboAlg = new System.Windows.Forms.ComboBox();
@@ -54,6 +54,8 @@
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.btnEndCmd = new System.Windows.Forms.Button();
+            this.btnExecute = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCmd)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -67,14 +69,14 @@
             this.dgvCmd.AllowUserToResizeRows = false;
             this.dgvCmd.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvCmd.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvCmd.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvCmd.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvCmd.Location = new System.Drawing.Point(13, 108);
             this.dgvCmd.Margin = new System.Windows.Forms.Padding(4);
             this.dgvCmd.MultiSelect = false;
@@ -135,7 +137,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(325, 80);
+            this.label3.Location = new System.Drawing.Point(478, 108);
             this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(146, 18);
@@ -145,7 +147,7 @@
             // btnSaveLog
             // 
             this.btnSaveLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSaveLog.Location = new System.Drawing.Point(720, 176);
+            this.btnSaveLog.Location = new System.Drawing.Point(335, 471);
             this.btnSaveLog.Margin = new System.Windows.Forms.Padding(5);
             this.btnSaveLog.Name = "btnSaveLog";
             this.btnSaveLog.Size = new System.Drawing.Size(124, 30);
@@ -157,7 +159,7 @@
             // btnClearLog
             // 
             this.btnClearLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearLog.Location = new System.Drawing.Point(720, 108);
+            this.btnClearLog.Location = new System.Drawing.Point(335, 371);
             this.btnClearLog.Margin = new System.Windows.Forms.Padding(5);
             this.btnClearLog.Name = "btnClearLog";
             this.btnClearLog.Size = new System.Drawing.Size(124, 30);
@@ -169,7 +171,7 @@
             // btnCSend
             // 
             this.btnCSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCSend.Location = new System.Drawing.Point(720, 40);
+            this.btnCSend.Location = new System.Drawing.Point(335, 71);
             this.btnCSend.Margin = new System.Windows.Forms.Padding(5);
             this.btnCSend.Name = "btnCSend";
             this.btnCSend.Size = new System.Drawing.Size(124, 30);
@@ -181,18 +183,18 @@
             // txtCMsg
             // 
             this.txtCMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCMsg.Location = new System.Drawing.Point(481, 42);
+            this.txtCMsg.Location = new System.Drawing.Point(481, 71);
             this.txtCMsg.Margin = new System.Windows.Forms.Padding(5);
             this.txtCMsg.Multiline = true;
             this.txtCMsg.Name = "txtCMsg";
-            this.txtCMsg.Size = new System.Drawing.Size(210, 29);
+            this.txtCMsg.Size = new System.Drawing.Size(363, 29);
             this.txtCMsg.TabIndex = 55;
             // 
             // labelManualCommand
             // 
             this.labelManualCommand.AutoSize = true;
             this.labelManualCommand.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelManualCommand.Location = new System.Drawing.Point(325, 42);
+            this.labelManualCommand.Location = new System.Drawing.Point(478, 40);
             this.labelManualCommand.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.labelManualCommand.Name = "labelManualCommand";
             this.labelManualCommand.Size = new System.Drawing.Size(134, 18);
@@ -202,12 +204,12 @@
             // txtMsg
             // 
             this.txtMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMsg.Location = new System.Drawing.Point(328, 110);
+            this.txtMsg.Location = new System.Drawing.Point(481, 135);
             this.txtMsg.Margin = new System.Windows.Forms.Padding(5);
             this.txtMsg.Multiline = true;
             this.txtMsg.Name = "txtMsg";
             this.txtMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtMsg.Size = new System.Drawing.Size(363, 415);
+            this.txtMsg.Size = new System.Drawing.Size(363, 390);
             this.txtMsg.TabIndex = 51;
             // 
             // menuStrip1
@@ -310,6 +312,30 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // btnEndCmd
+            // 
+            this.btnEndCmd.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEndCmd.Location = new System.Drawing.Point(335, 271);
+            this.btnEndCmd.Margin = new System.Windows.Forms.Padding(5);
+            this.btnEndCmd.Name = "btnEndCmd";
+            this.btnEndCmd.Size = new System.Drawing.Size(124, 30);
+            this.btnEndCmd.TabIndex = 54;
+            this.btnEndCmd.Text = "End Cmd";
+            this.btnEndCmd.UseVisualStyleBackColor = true;
+            this.btnEndCmd.Click += new System.EventHandler(this.btnEndCmd_Click);
+            // 
+            // btnExecute
+            // 
+            this.btnExecute.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExecute.Location = new System.Drawing.Point(335, 171);
+            this.btnExecute.Margin = new System.Windows.Forms.Padding(5);
+            this.btnExecute.Name = "btnExecute";
+            this.btnExecute.Size = new System.Drawing.Size(124, 30);
+            this.btnExecute.TabIndex = 54;
+            this.btnExecute.Text = "Execute Cmd";
+            this.btnExecute.UseVisualStyleBackColor = true;
+            this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -320,6 +346,8 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btnSaveLog);
             this.Controls.Add(this.btnClearLog);
+            this.Controls.Add(this.btnExecute);
+            this.Controls.Add(this.btnEndCmd);
             this.Controls.Add(this.btnCSend);
             this.Controls.Add(this.txtCMsg);
             this.Controls.Add(this.labelManualCommand);
@@ -367,5 +395,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button btnEndCmd;
+        private System.Windows.Forms.Button btnExecute;
     }
 }

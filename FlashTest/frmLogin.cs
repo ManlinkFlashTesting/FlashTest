@@ -8,8 +8,7 @@ namespace FlashTest
 {
     public partial class frmLogin : Form
     {
-        public string clientIP;
-        public string clientPort;
+
         public Socket ClientSocket = null;
 
         public frmLogin()
@@ -55,11 +54,11 @@ namespace FlashTest
                 return false;
             }
         }
-        private Boolean SocketConnectionCheck(string ip, string port)//check the ip and port connection
+        private Boolean SocketConnectionCheck()//check the ip and port connection
         {
             ClientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPAddress yourAddress = IPAddress.Parse(ip);
-            int yourPort = int.Parse(port);
+            IPAddress yourAddress = config.clientIP;
+            int yourPort = config.clientPort;
 
             try
             {
@@ -95,7 +94,20 @@ namespace FlashTest
         }
         private void btnOK_Click(object sender, EventArgs e)//login button
         {
+            LoginAction();
+        }
 
+        private void txtPwd_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                LoginAction();
+            }
+        }
+
+
+        private void LoginAction()
+        {
             if (txtUser.Text == "")
             {
                 MessageBox.Show("Username can not be blank!");
@@ -107,11 +119,12 @@ namespace FlashTest
                 return;
             }
 
-            clientIP = txtIP.Text.Trim();
-            clientPort = txtPort.Text.Trim();
-            if (!SocketConnectionCheck(clientIP, clientPort))
+            config.txtIP = txtIP.Text.Trim();
+            config.txtPort = txtPort.Text.Trim();
+            
+            if (!SocketConnectionCheck())
             {
-                string message = string.Format("TcpClient connection to {0}:{1} timed out", clientIP, clientPort);
+                string message = string.Format("TcpClient connection to {0}:{1} timed out", config.txtIP, config.txtPort);
                 MessageBox.Show(message);
                 return;
             }
@@ -124,38 +137,6 @@ namespace FlashTest
             }
             else MessageBox.Show("Username and Password is not correct");
         }
-        private void txtPwd_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                if (txtUser.Text == "")
-                {
-                    MessageBox.Show("Username can not be blank!");
-                    return;
-                }
-                if (txtPwd.Text == "")
-                {
-                    MessageBox.Show("Password can not be blank!");
-                    return;
-                }
 
-                clientIP = txtIP.Text.Trim();
-                clientPort = txtPort.Text.Trim();
-                if (!SocketConnectionCheck(clientIP, clientPort))
-                {
-                    string message = string.Format("TcpClient connection to {0}:{1} timed out", clientIP, clientPort);
-                    MessageBox.Show(message);
-                    return;
-                }
-
-                if (LoginInfoCheck(txtUser.Text.Trim(), txtPwd.Text.Trim()))
-                {
-                    frmMain frm = new frmMain();
-                    frm.Show();
-                    this.Hide();
-                }
-                else MessageBox.Show("Username and Password is not correct");
-            }
-        }
     }
 }
