@@ -95,7 +95,6 @@
             this.cboDeviceType.Margin = new System.Windows.Forms.Padding(4);
             this.cboDeviceType.Name = "cboDeviceType";
             this.cboDeviceType.Size = new System.Drawing.Size(143, 26);
-            this.cboDeviceType.Sorted = true;
             this.cboDeviceType.TabIndex = 6;
             this.cboDeviceType.SelectedIndexChanged += new System.EventHandler(this.cboDeviceType_SelectedIndexChanged);
             // 
@@ -107,7 +106,6 @@
             this.cboAlg.Margin = new System.Windows.Forms.Padding(4);
             this.cboAlg.Name = "cboAlg";
             this.cboAlg.Size = new System.Drawing.Size(143, 26);
-            this.cboAlg.Sorted = true;
             this.cboAlg.TabIndex = 6;
             this.cboAlg.SelectedIndexChanged += new System.EventHandler(this.cboAlg_SelectedIndexChanged);
             // 
@@ -171,7 +169,7 @@
             // btnCSend
             // 
             this.btnCSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCSend.Location = new System.Drawing.Point(335, 71);
+            this.btnCSend.Location = new System.Drawing.Point(1034, 69);
             this.btnCSend.Margin = new System.Windows.Forms.Padding(5);
             this.btnCSend.Name = "btnCSend";
             this.btnCSend.Size = new System.Drawing.Size(124, 30);
@@ -187,7 +185,7 @@
             this.txtCMsg.Margin = new System.Windows.Forms.Padding(5);
             this.txtCMsg.Multiline = true;
             this.txtCMsg.Name = "txtCMsg";
-            this.txtCMsg.Size = new System.Drawing.Size(363, 29);
+            this.txtCMsg.Size = new System.Drawing.Size(543, 29);
             this.txtCMsg.TabIndex = 55;
             // 
             // labelManualCommand
@@ -203,13 +201,14 @@
             // 
             // txtMsg
             // 
+            this.txtMsg.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMsg.Location = new System.Drawing.Point(481, 135);
             this.txtMsg.Margin = new System.Windows.Forms.Padding(5);
             this.txtMsg.Multiline = true;
             this.txtMsg.Name = "txtMsg";
             this.txtMsg.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtMsg.Size = new System.Drawing.Size(363, 390);
+            this.txtMsg.Size = new System.Drawing.Size(677, 390);
             this.txtMsg.TabIndex = 51;
             // 
             // menuStrip1
@@ -223,7 +222,7 @@
             this.tsmAbout});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(882, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1172, 28);
             this.menuStrip1.TabIndex = 58;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -282,7 +281,7 @@
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 530);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(882, 25);
+            this.statusStrip1.Size = new System.Drawing.Size(1172, 25);
             this.statusStrip1.TabIndex = 59;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -340,7 +339,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(882, 555);
+            this.ClientSize = new System.Drawing.Size(1172, 555);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.label3);
@@ -357,6 +356,7 @@
             this.Controls.Add(this.dgvCmd);
             this.Controls.Add(this.cboAlg);
             this.Controls.Add(this.cboDeviceType);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmMain";
             this.Text = "Flash Testing";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);

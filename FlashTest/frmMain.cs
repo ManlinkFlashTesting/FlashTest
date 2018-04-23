@@ -32,6 +32,7 @@ namespace FlashTest
         public frmMain()
         {
             InitializeComponent();
+            Control.CheckForIllegalCrossThreadCalls = false;
             timer1.Start();
             LoadCmdToGrid();
             GetStatus();
@@ -83,14 +84,22 @@ namespace FlashTest
         private void btnExecute_Click(object sender, EventArgs e)
         {
             if (dgvCmd.RowCount == 0) return;
-            if (dgvCmd.RowCount == dgvCmd.CurrentRow.Index+1) return;
-            else
+            if ( dgvCmd.CurrentRow.Index< dgvCmd.RowCount-1 )
             {
                 string currentCmd = dgvCmd.CurrentRow.Cells[0].Value.ToString();
                 ClientSendMsg(currentCmd, 0);
-                dgvCmd.CurrentCell = dgvCmd.Rows[dgvCmd.CurrentRow.Index + 1].Cells[0]; 
+                dgvCmd.CurrentCell = dgvCmd.Rows[dgvCmd.CurrentRow.Index + 1].Cells[0];
+
             }
+            else if(dgvCmd.CurrentRow.Index == dgvCmd.RowCount-1)
+            {
+                string currentCmd = dgvCmd.CurrentRow.Cells[0].Value.ToString();
+                ClientSendMsg(currentCmd, 0);
+                dgvCmd.CurrentCell = dgvCmd.Rows[0].Cells[0];
+            }
+            btnExecute.Enabled = false;
             Thread.Sleep(10);
+
         }
 
         private void btnEndCmd_Click(object sender, EventArgs e)
@@ -453,7 +462,7 @@ namespace FlashTest
             while (true) //持续监听服务端发来的消息
             {
                 int length = 0;
-                byte[] buffer = new byte[SendBufferSize];
+                byte[] buffer = new byte[ReceiveBufferSize];
                 try
                 {
                     //将客户端套接字接收到的字节数组存入内存缓冲区, 并获取其长度
@@ -475,15 +484,17 @@ namespace FlashTest
                 strRecMsg = Encoding.UTF8.GetString(buffer, 0, length);
 
                 //将文本框输入的信息附加到txtMsg中  并显示 谁,什么时间,换行,发送了什么信息 再换行
-                txtMsg.AppendText("Server " + GetCurrentTime() + " send:\r\n" + strRecMsg + "\r\n");
+                txtMsg.AppendText( strRecMsg +"\r\n");//"Server " + GetCurrentTime() + " send:\r\n" +
+                btnExecute.Enabled = true;
             }
         }
+
         private void ClientSendMsg(string sendMsg, byte symbol)
         {
             if (sendMsg.Trim() == string.Empty) return;
             byte[] arrClientMsg = Encoding.UTF8.GetBytes(sendMsg);
             socketClient.Send(arrClientMsg);
-            txtMsg.AppendText("Client send: " + sendMsg + "\r\n");
+            txtMsg.AppendText(GetCurrentTime() + "  "+sendMsg + "\r\n");
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
