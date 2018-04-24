@@ -454,6 +454,7 @@ namespace FlashTest
             }
             catch (SocketException ex)
             {
+                btnExecute.Enabled = false;
                 txtMsg.AppendText("Socker error message:" + ex.Message + "\r\n");
             }
         }
@@ -470,6 +471,7 @@ namespace FlashTest
                 }
                 catch (SocketException ex)
                 {
+                    btnExecute.Enabled = false;
                     txtMsg.AppendText("Socker error message:" + ex.Message + "\r\n");
                     txtMsg.AppendText("Server disconnect...\r\n");
                     break;
@@ -477,6 +479,7 @@ namespace FlashTest
                 }
                 catch (Exception ex)
                 {
+                    btnExecute.Enabled = false;
                     txtMsg.AppendText("System error message: " + ex.Message + "\r\n");
                     break;
                 }

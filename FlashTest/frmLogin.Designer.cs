@@ -125,7 +125,6 @@
             this.txtIP.Name = "txtIP";
             this.txtIP.Size = new System.Drawing.Size(161, 27);
             this.txtIP.TabIndex = 1;
-            this.txtIP.Text = "192.168.0.7";
             // 
             // txtPort
             // 
@@ -135,7 +134,6 @@
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(161, 27);
             this.txtPort.TabIndex = 2;
-            this.txtPort.Text = "30";
             // 
             // chkMemoryPwd
             // 

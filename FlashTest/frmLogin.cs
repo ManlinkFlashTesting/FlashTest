@@ -6,6 +6,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Collections.Generic;
+using System.Text;
 
 namespace FlashTest
 {
@@ -98,9 +99,66 @@ namespace FlashTest
 
         List<User> users;   //声明一个用户的泛型集合  
 
-        private void LoginForm_Load(object sender, EventArgs e)
+        private void LoginForm_Load(object sender, EventArgs e)//当窗口加载时
         {
+            ReadTcpInfoFromFile();
+            ReadUserInfoFromFile();
+        }
+        private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)//当窗体关闭之后  
+        {
+            Application.Exit();
+        }
 
+        private void ReadTcpInfoFromFile()//read tcp config from file
+        {
+            if (File.Exists("config.txt"))
+            {
+                string line = string.Empty;
+                long lineNum = 0;
+                try
+                {
+                    StreamReader file = new StreamReader("config.txt", Encoding.Default);
+                    line = file.ReadLine();
+                    if (line == null)
+                    {
+                        txtIP.Text = "192.168.0.0";
+                        txtPort.Text = "30";
+                    }
+                    while (line != null)
+                    {
+                        lineNum++;
+                        if (lineNum == 1)
+                        {
+                            txtIP.Text = line;
+                        }
+                        else if (lineNum == 2)
+                        {
+                            txtPort.Text = line;
+                        }
+                        else
+                        {
+                            txtIP.Text = "192.168.0.0";
+                            txtPort.Text = "30";
+                            return;
+                        }
+                        line = file.ReadLine();
+                    }
+                    file.Close();
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+            }
+            else
+            {
+                txtIP.Text = "192.168.0.0";
+                txtPort.Text = "30";
+            }
+        }
+        private void ReadUserInfoFromFile()//read user config from file
+        {
             if (File.Exists("userInfo.bin"))
             {
                 /*创建文件流对象 参数1:文件的(相对)路径也可以再另一个文件夹下如:User(文件夹)/userInfo.bin  
@@ -131,18 +189,23 @@ namespace FlashTest
                 cboLgoinName.Text = "<Enter UserName>";
             }
         }
-
-
-        //当窗体关闭之后  
-        private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void WriteUserInfoToFile()//write tcp config to file
         {
-
             //为了安全在这里创建了一个userInfo.bin文件(用户信息),也可以命名为其他的文件格式的(可以任意)  
             FileStream fs = new FileStream("userInfo.bin", FileMode.Create, FileAccess.Write);  //创建一个文件流对象  
             BinaryFormatter bf = new BinaryFormatter();  //创建一个序列化和反序列化对象  
             bf.Serialize(fs, users);   //要先将User类先设为可以序列化(即在类的前面加[Serializable])。将用户集合信息写入到硬盘中  
             fs.Close();   //关闭文件流  
         }
+        private void WriteTcpInfoToFile()//write user config to file
+        {
+            File.WriteAllText("config.txt", string.Empty);
+            StreamWriter sw = new StreamWriter("config.txt", true, Encoding.Default);
+            sw.WriteLine(txtIP.Text);
+            sw.WriteLine(txtPort.Text);
+            sw.Close();
+        }
+        
 
         //当下拉框选择的项的值发生改变时  
         private void cboLgoinName_SelectedIndexChanged(object sender, EventArgs e)
@@ -159,7 +222,6 @@ namespace FlashTest
                 this.chkMemoryPwd.Checked = false;
             }
         }
-
         private void txtPwd_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -167,7 +229,6 @@ namespace FlashTest
                 LoginAction();
             }
         }
-
         private void LoginAction()
         {
             if (this.cboLgoinName.Text == "" || this.cboLgoinName.Text == "<Enter UserName>")
@@ -220,6 +281,7 @@ namespace FlashTest
                     user = new User(loginName, "");  //否则只插入一个用户名到用户集合中，密码设为空  
                 users.Insert(0, user);   //在用户集合中插入一个用户  
                 cboLgoinName.SelectedIndex = 0;   //让下拉框选中集合中的第一个  
+                WriteUserInfoToFile();
             }
             else
             {
@@ -233,6 +295,7 @@ namespace FlashTest
 
             if (SocketConnectionCheck())
             {
+                WriteTcpInfoToFile();
                 frmMain frm = new frmMain();
                 frm.Show();
                 this.Hide();
