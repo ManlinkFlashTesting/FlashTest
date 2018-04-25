@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvCmd = new System.Windows.Forms.DataGridView();
             this.cboDeviceType = new System.Windows.Forms.ComboBox();
             this.cboAlg = new System.Windows.Forms.ComboBox();
@@ -46,7 +46,7 @@
             this.tsmFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmDatabase = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmimportCmd = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmImportCmd = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmShowDatabase = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -56,6 +56,7 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnEndCmd = new System.Windows.Forms.Button();
             this.btnExecute = new System.Windows.Forms.Button();
+            this.tsmDeleteCmd = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCmd)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -69,21 +70,21 @@
             this.dgvCmd.AllowUserToResizeRows = false;
             this.dgvCmd.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvCmd.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvCmd.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvCmd.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvCmd.Location = new System.Drawing.Point(13, 108);
             this.dgvCmd.Margin = new System.Windows.Forms.Padding(4);
             this.dgvCmd.MultiSelect = false;
             this.dgvCmd.Name = "dgvCmd";
             this.dgvCmd.ReadOnly = true;
             this.dgvCmd.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dgvCmd.Size = new System.Drawing.Size(297, 418);
+            this.dgvCmd.Size = new System.Drawing.Size(321, 418);
             this.dgvCmd.TabIndex = 7;
             // 
             // cboDeviceType
@@ -94,7 +95,7 @@
             this.cboDeviceType.Location = new System.Drawing.Point(16, 72);
             this.cboDeviceType.Margin = new System.Windows.Forms.Padding(4);
             this.cboDeviceType.Name = "cboDeviceType";
-            this.cboDeviceType.Size = new System.Drawing.Size(143, 26);
+            this.cboDeviceType.Size = new System.Drawing.Size(167, 26);
             this.cboDeviceType.TabIndex = 6;
             this.cboDeviceType.SelectedIndexChanged += new System.EventHandler(this.cboDeviceType_SelectedIndexChanged);
             // 
@@ -102,7 +103,7 @@
             // 
             this.cboAlg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAlg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboAlg.Location = new System.Drawing.Point(168, 72);
+            this.cboAlg.Location = new System.Drawing.Point(191, 72);
             this.cboAlg.Margin = new System.Windows.Forms.Padding(4);
             this.cboAlg.Name = "cboAlg";
             this.cboAlg.Size = new System.Drawing.Size(143, 26);
@@ -124,7 +125,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(164, 42);
+            this.label2.Location = new System.Drawing.Point(188, 42);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(97, 18);
@@ -145,7 +146,7 @@
             // btnSaveLog
             // 
             this.btnSaveLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSaveLog.Location = new System.Drawing.Point(335, 471);
+            this.btnSaveLog.Location = new System.Drawing.Point(347, 470);
             this.btnSaveLog.Margin = new System.Windows.Forms.Padding(5);
             this.btnSaveLog.Name = "btnSaveLog";
             this.btnSaveLog.Size = new System.Drawing.Size(124, 30);
@@ -157,7 +158,7 @@
             // btnClearLog
             // 
             this.btnClearLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearLog.Location = new System.Drawing.Point(335, 371);
+            this.btnClearLog.Location = new System.Drawing.Point(347, 370);
             this.btnClearLog.Margin = new System.Windows.Forms.Padding(5);
             this.btnClearLog.Name = "btnClearLog";
             this.btnClearLog.Size = new System.Drawing.Size(124, 30);
@@ -238,30 +239,31 @@
             // tsmExit
             // 
             this.tsmExit.Name = "tsmExit";
-            this.tsmExit.Size = new System.Drawing.Size(108, 26);
+            this.tsmExit.Size = new System.Drawing.Size(181, 26);
             this.tsmExit.Text = "Exit";
             this.tsmExit.Click += new System.EventHandler(this.tsmExit_Click);
             // 
             // tsmDatabase
             // 
             this.tsmDatabase.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmimportCmd,
+            this.tsmImportCmd,
+            this.tsmDeleteCmd,
             this.tsmShowDatabase});
             this.tsmDatabase.Name = "tsmDatabase";
             this.tsmDatabase.Size = new System.Drawing.Size(84, 24);
             this.tsmDatabase.Text = "Database";
             // 
-            // tsmimportCmd
+            // tsmImportCmd
             // 
-            this.tsmimportCmd.Name = "tsmimportCmd";
-            this.tsmimportCmd.Size = new System.Drawing.Size(187, 26);
-            this.tsmimportCmd.Text = "Import Cmd";
-            this.tsmimportCmd.Click += new System.EventHandler(this.tsmImportCmd_Click);
+            this.tsmImportCmd.Name = "tsmImportCmd";
+            this.tsmImportCmd.Size = new System.Drawing.Size(190, 26);
+            this.tsmImportCmd.Text = "Import Cmd List";
+            this.tsmImportCmd.Click += new System.EventHandler(this.tsmImportCmd_Click);
             // 
             // tsmShowDatabase
             // 
             this.tsmShowDatabase.Name = "tsmShowDatabase";
-            this.tsmShowDatabase.Size = new System.Drawing.Size(187, 26);
+            this.tsmShowDatabase.Size = new System.Drawing.Size(190, 26);
             this.tsmShowDatabase.Text = "Show Database";
             this.tsmShowDatabase.Click += new System.EventHandler(this.tsmShowDatabase_Click);
             // 
@@ -314,7 +316,7 @@
             // btnEndCmd
             // 
             this.btnEndCmd.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEndCmd.Location = new System.Drawing.Point(335, 271);
+            this.btnEndCmd.Location = new System.Drawing.Point(347, 270);
             this.btnEndCmd.Margin = new System.Windows.Forms.Padding(5);
             this.btnEndCmd.Name = "btnEndCmd";
             this.btnEndCmd.Size = new System.Drawing.Size(124, 30);
@@ -326,7 +328,7 @@
             // btnExecute
             // 
             this.btnExecute.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExecute.Location = new System.Drawing.Point(335, 171);
+            this.btnExecute.Location = new System.Drawing.Point(347, 170);
             this.btnExecute.Margin = new System.Windows.Forms.Padding(5);
             this.btnExecute.Name = "btnExecute";
             this.btnExecute.Size = new System.Drawing.Size(124, 30);
@@ -334,6 +336,13 @@
             this.btnExecute.Text = "Execute Cmd";
             this.btnExecute.UseVisualStyleBackColor = true;
             this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
+            // 
+            // tsmDeleteCmd
+            // 
+            this.tsmDeleteCmd.Name = "tsmDeleteCmd";
+            this.tsmDeleteCmd.Size = new System.Drawing.Size(190, 26);
+            this.tsmDeleteCmd.Text = "Delete Cmd List";
+            this.tsmDeleteCmd.Click += new System.EventHandler(this.tsmDeleteCmd_Click);
             // 
             // frmMain
             // 
@@ -357,6 +366,7 @@
             this.Controls.Add(this.cboAlg);
             this.Controls.Add(this.cboDeviceType);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "frmMain";
             this.Text = "Flash Testing";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
@@ -387,7 +397,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmFile;
         private System.Windows.Forms.ToolStripMenuItem tsmExit;
         private System.Windows.Forms.ToolStripMenuItem tsmDatabase;
-        private System.Windows.Forms.ToolStripMenuItem tsmimportCmd;
+        private System.Windows.Forms.ToolStripMenuItem tsmImportCmd;
         private System.Windows.Forms.ToolStripMenuItem tsmShowDatabase;
         private System.Windows.Forms.ToolStripMenuItem tsmAbout;
         private System.Windows.Forms.StatusStrip statusStrip1;
@@ -397,5 +407,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button btnEndCmd;
         private System.Windows.Forms.Button btnExecute;
+        private System.Windows.Forms.ToolStripMenuItem tsmDeleteCmd;
     }
 }

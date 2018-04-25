@@ -8,6 +8,7 @@ using System.Data;
 using System.Net.Sockets;
 using System.Threading;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace FlashTest
 {
@@ -106,7 +107,6 @@ namespace FlashTest
         {
             dgvCmd.CurrentCell = dgvCmd.Rows[0].Cells[0];
         }
-
         private void txtCMsg_KeyDown(object sender, KeyEventArgs e)//快捷键 Enter 发送信息
         {   //当光标位于输入文本框上的情况下 发送信息的热键为回车键Enter 
             if (e.KeyCode == Keys.Enter)
@@ -149,8 +149,14 @@ namespace FlashTest
             {
                 fullPath = openfile.FileName;//send the filename to global Variable
                 filename = Path.GetFileNameWithoutExtension(fullPath);
+                if (!IsValidUserName(filename))
+                {
+                    MessageBox.Show("File Name Only Contains [A-Za-z_0-9]", "System Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
             }
             else return;
+
             //2.create database table based on filename
             //check table is exist? and create table
             if (CheckExistTable(filename))
@@ -185,7 +191,26 @@ namespace FlashTest
         }
         private void tsmShowDatabase_Click(object sender, EventArgs e)//show database path
         {
+            using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
+            {
+                using (SQLiteCommand cmd = new SQLiteCommand())
+                {
+                    cmd.Connection = conn;
+                    conn.Open();
 
+                    SQLiteHelper sh = new SQLiteHelper(cmd);
+                    DataTable dt = sh.ShowDatabase();
+                    string DatabasePath = dt.Rows[0].ItemArray[2].ToString();
+                    DatabasePath = DatabasePath.Replace(@"\\", @"\");
+                    MessageBox.Show(DatabasePath);
+                    conn.Close();
+                }
+            }
+        }
+        private void tsmDeleteCmd_Click(object sender, EventArgs e)
+        {
+            DeleteTable(cboDeviceType.SelectedValue.ToString());
+            LoadCmdToGrid();
         }
 
         //define user method
@@ -240,7 +265,6 @@ namespace FlashTest
         }
         private void DeleteTable(string filename)// read file create database table
         {
-            config.DatabaseFile = "database.sqlite";
             using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
             {
                 using (SQLiteCommand cmd = new SQLiteCommand())
@@ -249,13 +273,14 @@ namespace FlashTest
                     cmd.Connection = conn;
 
                     SQLiteHelper sh = new SQLiteHelper(cmd);
-                    //SQLiteTable tb = new SQLiteTable(filename);
+
                     sh.DropTable(filename);
-                    //sh.CreateTable(tb);
                     conn.Close();
                 }
             }
         }
+
+       
         private Boolean CheckExistTable(string filename)// read file create database table
         {
             using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
@@ -509,7 +534,21 @@ namespace FlashTest
             string currentTime = dt.ToString("yyyy-MM-dd HH:mm:ss");
             return currentTime;
         }
-
-
+        /// <summary>
+        /// 检测用户名格式是否有效
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public static bool IsValidUserName(string filename)
+        {
+            if (Regex.IsMatch(filename, @"^([A-Za-z_0-9]{0,})$"))
+            {   // 判断内容（只能是字母、下划线、数字）是否合法
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
