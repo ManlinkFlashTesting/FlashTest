@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace FlashTest
 {
@@ -22,18 +23,19 @@ namespace FlashTest
         BindingSource DeveiceTypeBS = new BindingSource();
         BindingSource AlgBS = new BindingSource();
 
-        private const int SendBufferSize = 2 * 1024;
+        private const int SendBufferSize = 8 * 1024;
         private const int ReceiveBufferSize = 8 * 1024;
-        private string strRecMsg = null;
+
+        //private Boolean Ackflag = false;
         Socket socketClient = null;
-        Thread threadClient = null;
+        Thread threadClientRec = null;
 
         private List<string> objListCmd = new List<string>(); //define student info variable
 
         public frmMain()
         {
             InitializeComponent();
-            Control.CheckForIllegalCrossThreadCalls = false;
+            //Control.CheckForIllegalCrossThreadCalls = false;
             timer1.Start();
             LoadCmdToGrid();
             GetStatus();
@@ -85,14 +87,14 @@ namespace FlashTest
         private void btnExecute_Click(object sender, EventArgs e)
         {
             if (dgvCmd.RowCount == 0) return;
-            if ( dgvCmd.CurrentRow.Index< dgvCmd.RowCount-1 )
+            if (dgvCmd.CurrentRow.Index < dgvCmd.RowCount - 1)
             {
                 string currentCmd = dgvCmd.CurrentRow.Cells[0].Value.ToString();
                 ClientSendMsg(currentCmd, 0);
                 dgvCmd.CurrentCell = dgvCmd.Rows[dgvCmd.CurrentRow.Index + 1].Cells[0];
 
             }
-            else if(dgvCmd.CurrentRow.Index == dgvCmd.RowCount-1)
+            else if (dgvCmd.CurrentRow.Index == dgvCmd.RowCount - 1)
             {
                 string currentCmd = dgvCmd.CurrentRow.Cells[0].Value.ToString();
                 ClientSendMsg(currentCmd, 0);
@@ -280,7 +282,7 @@ namespace FlashTest
             }
         }
 
-       
+
         private Boolean CheckExistTable(string filename)// read file create database table
         {
             using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
@@ -332,7 +334,7 @@ namespace FlashTest
 
                     foreach (var Cmd in objListCmd)
                     {
-                        if (Cmd.StartsWith("testinit") | Cmd.StartsWith("get-chipid")|
+                        if (Cmd.StartsWith("testinit") | Cmd.StartsWith("get-chipid") |
                             Cmd.StartsWith("set-clock") | Cmd.StartsWith("set-vccvolt") | Cmd.StartsWith("get-chipid"))
                         {
                             dic["CmdID"] = count;
@@ -378,7 +380,7 @@ namespace FlashTest
                         DeveiceTypeBS.DataSource = dt;
                         cboDeviceType.DataSource = DeveiceTypeBS;
                         cboDeviceType.ValueMember = dt.Columns[0].ColumnName;
-                        
+
                         string Query = string.Format("SELECT distinct cmdtype FROM {0};", cboDeviceType.SelectedValue.ToString());
                         DataTable dt2 = sh.Select(Query);
                         AlgBS.DataSource = dt2;
@@ -454,7 +456,7 @@ namespace FlashTest
             }
         }
 
-        
+
         //Tcp function
         private void ConnectToServer()
         {
@@ -467,15 +469,14 @@ namespace FlashTest
             {
                 //向指定的ip和端口号的服务端发送连接请求 用的方法是Connect 不是Bind
                 socketClient.Connect(endpoint);
-
                 //创建一个新线程 用于监听服务端发来的信息
-                threadClient = new Thread(RecMsg);
+                threadClientRec = new Thread(RecMsg);
                 //将窗体线程设置为与后台同步
-                threadClient.IsBackground = true;
+                threadClientRec.IsBackground = true;
                 //启动线程
-                threadClient.Start();
-                txtMsg.AppendText("Connected server, start communication...\r\n");
+                threadClientRec.Start();
 
+                txtMsg.AppendText("Connected server, start communication...\r\n");
             }
             catch (SocketException ex)
             {
@@ -483,8 +484,26 @@ namespace FlashTest
                 txtMsg.AppendText("Socker error message:" + ex.Message + "\r\n");
             }
         }
+
+        private delegate void InvokeCallback(string msg);
+        private void ShowMsg(string msg)
+        {
+            if (txtMsg.InvokeRequired)
+            {
+                InvokeCallback msgCallback = new InvokeCallback(ShowMsg);
+                txtMsg.Invoke(msgCallback, new object[] { msg });
+
+            }
+            else
+            {
+                txtMsg.AppendText(msg + "\r\n");
+                btnExecute.Enabled = true;
+            }
+        }
         private void RecMsg()
         {
+            string strRecMsg = null;
+            string newMsg = null;
             while (true) //持续监听服务端发来的消息
             {
                 int length = 0;
@@ -492,11 +511,11 @@ namespace FlashTest
                 try
                 {
                     //将客户端套接字接收到的字节数组存入内存缓冲区, 并获取其长度
+                    //Thread.Sleep(10000);
                     length = socketClient.Receive(buffer);
                 }
                 catch (SocketException ex)
                 {
-                    btnExecute.Enabled = false;
                     txtMsg.AppendText("Socker error message:" + ex.Message + "\r\n");
                     txtMsg.AppendText("Server disconnect...\r\n");
                     break;
@@ -504,16 +523,24 @@ namespace FlashTest
                 }
                 catch (Exception ex)
                 {
-                    btnExecute.Enabled = false;
                     txtMsg.AppendText("System error message: " + ex.Message + "\r\n");
                     break;
                 }
                 //将套接字获取到的字节数组转换为人可以看懂的字符串
-                strRecMsg = Encoding.UTF8.GetString(buffer, 0, length);
+                strRecMsg = Encoding.UTF8.GetString(buffer,  0, length);
 
                 //将文本框输入的信息附加到txtMsg中  并显示 谁,什么时间,换行,发送了什么信息 再换行
-                txtMsg.AppendText( strRecMsg +"\r\n");//"Server " + GetCurrentTime() + " send:\r\n" +
-                btnExecute.Enabled = true;
+                if (Regex.IsMatch(strRecMsg, @"\]$"))
+                {
+                    ShowMsg( newMsg+strRecMsg);
+                    newMsg = null;
+                }
+
+                else
+                {
+                    newMsg = newMsg + strRecMsg;
+                    //ShowMsg(newMsg+"-----------");
+                }
             }
         }
 
