@@ -375,17 +375,26 @@ namespace FlashTest
                         SQLiteHelper sh = new SQLiteHelper(cmd);
 
                         DataTable dt = sh.GetTableList();
-                        dt.Rows.Remove(dt.Rows[0]);
-                        dt.Rows.Remove(dt.Rows[0]);
-                        DeveiceTypeBS.DataSource = dt;
-                        cboDeviceType.DataSource = DeveiceTypeBS;
-                        cboDeviceType.ValueMember = dt.Columns[0].ColumnName;
+                        if (dt.Rows.Count > 2)
+                        {
+                            dt.Rows.Remove(dt.Rows[0]);
+                            dt.Rows.Remove(dt.Rows[0]);
+                            DeveiceTypeBS.DataSource = dt;
+                            cboDeviceType.DataSource = DeveiceTypeBS;
+                            cboDeviceType.ValueMember = "Tables";  //dt.Columns[0].ColumnName;
 
-                        string Query = string.Format("SELECT distinct cmdtype FROM {0};", cboDeviceType.SelectedValue.ToString());
-                        DataTable dt2 = sh.Select(Query);
-                        AlgBS.DataSource = dt2;
-                        cboAlg.DataSource = AlgBS;
-                        cboAlg.ValueMember = dt2.Columns[0].ColumnName;
+                            string Query = string.Format("SELECT distinct cmdtype FROM {0};", cboDeviceType.SelectedValue.ToString());
+                            DataTable dt2 = sh.Select(Query);
+                            AlgBS.DataSource = dt2;
+                            cboAlg.DataSource = AlgBS;
+                            cboAlg.ValueMember = dt2.Columns[0].ColumnName;
+                        }
+                        else
+                        {
+                            DeveiceTypeBS.DataSource=null;
+                            AlgBS.DataSource = null;
+                            return;
+                        }
 
                         conn.Close();
                     }
@@ -399,31 +408,39 @@ namespace FlashTest
         }
         private void UpdateAlgList()
         {
-            try
+            string queryString = cboDeviceType.SelectedValue.ToString();
+            if (queryString != "")
             {
-                using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
+
+                try
                 {
-                    using (SQLiteCommand cmd = new SQLiteCommand())
+                    using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
                     {
-                        conn.Open();
-                        cmd.Connection = conn;
+                        using (SQLiteCommand cmd = new SQLiteCommand())
+                        {
+                            conn.Open();
+                            cmd.Connection = conn;
 
-                        SQLiteHelper sh = new SQLiteHelper(cmd);
+                            SQLiteHelper sh = new SQLiteHelper(cmd);
 
-                        string Query = string.Format("SELECT distinct cmdtype FROM {0};", cboDeviceType.SelectedValue.ToString());
-                        DataTable dt3 = sh.Select(Query);
+                            string Query = string.Format("SELECT distinct cmdtype FROM {0};", cboDeviceType.SelectedValue.ToString());
+                            DataTable dt3 = sh.Select(Query);
 
-                        AlgBS.DataSource = dt3;
-                        AlgBS.ResetBindings(false);
-                        conn.Close();
+                            AlgBS.DataSource = dt3;
+                            AlgBS.ResetBindings(false);
+                            conn.Close();
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(ex.ToString());
+                return;
             }
-
         }
         private void GetStatus()
         {
@@ -431,24 +448,32 @@ namespace FlashTest
             {
                 string tableName = cboDeviceType.SelectedValue + "";
                 string AlgName = cboAlg.SelectedValue + "";
-
-                using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
+                if (tableName != "" & AlgName != "")
                 {
-                    using (SQLiteCommand cmd = new SQLiteCommand())
+                    using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
                     {
-                        conn.Open();
-                        cmd.Connection = conn;
+                        using (SQLiteCommand cmd = new SQLiteCommand())
+                        {
+                            conn.Open();
+                            cmd.Connection = conn;
 
-                        SQLiteHelper sh = new SQLiteHelper(cmd);
+                            SQLiteHelper sh = new SQLiteHelper(cmd);
 
-                        string Query = string.Format("SELECT CmdValue FROM {0} WHERE CmdType = '{1}' or CmdType = 'common';", tableName, AlgName);
-                        //SELECT * FROM mircon_1G_cmd WHERE CmdType = 'alg = 1' or CmdType = 'common';
-                        DataTable dt = sh.Select(Query);
-                        dgvCmd.DataSource = dt;
+                            string Query = string.Format("SELECT CmdValue FROM {0} WHERE CmdType = '{1}' or CmdType = 'common';", tableName, AlgName);
+                            //SELECT * FROM mircon_1G_cmd WHERE CmdType = 'alg = 1' or CmdType = 'common';
+                            DataTable dt = sh.Select(Query);
+                            dgvCmd.DataSource = dt;
 
-                        conn.Close();
+                            conn.Close();
+                        }
                     }
                 }
+                else
+                {
+                    dgvCmd.DataSource = null;
+                    return;
+                }
+                
             }
             catch (Exception ex)
             {
