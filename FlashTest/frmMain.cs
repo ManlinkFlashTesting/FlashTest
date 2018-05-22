@@ -99,8 +99,8 @@ namespace FlashTest
                 ClientSendMsg(currentCmd, 0);
                 dgvCmd.CurrentCell = dgvCmd.Rows[0].Cells[0];
             }
-            //btnExecute.Enabled = false;
-            Thread.Sleep(10);
+            ModifyButton(btnExecute, false);
+            Thread.Sleep(1);
 
         }
         private void btnEndCmd_Click(object sender, EventArgs e)// end command execute, index back to 0
@@ -599,8 +599,13 @@ namespace FlashTest
             else
             {
                 txtMsg.AppendText(msg + "\r\n");
-                //btnExecute.Enabled = true;
+                ModifyButton(btnExecute,true);
             }
+        }
+        private delegate void ModifyButton_dg(Button _btnName, bool _b);
+        private void ModifyButton(Button _btnName, bool _b)// enable or disable button
+        {
+            _btnName.Enabled = _b;
         }
         private void RecMsg()// recieve tcp meassage 
         {
