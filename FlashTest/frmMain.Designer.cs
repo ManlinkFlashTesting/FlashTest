@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvCmd = new System.Windows.Forms.DataGridView();
             this.cboDeviceType = new System.Windows.Forms.ComboBox();
             this.cboAlg = new System.Windows.Forms.ComboBox();
@@ -47,6 +47,7 @@
             this.tsmExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmDatabase = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmImportCmd = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmDeleteCmd = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmShowDatabase = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -56,7 +57,8 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnEndCmd = new System.Windows.Forms.Button();
             this.btnExecute = new System.Windows.Forms.Button();
-            this.tsmDeleteCmd = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmDownload = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmPatternDownload = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCmd)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -70,14 +72,14 @@
             this.dgvCmd.AllowUserToResizeRows = false;
             this.dgvCmd.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvCmd.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvCmd.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvCmd.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvCmd.Location = new System.Drawing.Point(13, 108);
             this.dgvCmd.Margin = new System.Windows.Forms.Padding(4);
             this.dgvCmd.MultiSelect = false;
@@ -220,6 +222,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmFile,
             this.tsmDatabase,
+            this.tsmDownload,
             this.tsmAbout});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -239,7 +242,7 @@
             // tsmExit
             // 
             this.tsmExit.Name = "tsmExit";
-            this.tsmExit.Size = new System.Drawing.Size(181, 26);
+            this.tsmExit.Size = new System.Drawing.Size(108, 26);
             this.tsmExit.Text = "Exit";
             this.tsmExit.Click += new System.EventHandler(this.tsmExit_Click);
             // 
@@ -259,6 +262,13 @@
             this.tsmImportCmd.Size = new System.Drawing.Size(190, 26);
             this.tsmImportCmd.Text = "Import Cmd List";
             this.tsmImportCmd.Click += new System.EventHandler(this.tsmImportCmd_Click);
+            // 
+            // tsmDeleteCmd
+            // 
+            this.tsmDeleteCmd.Name = "tsmDeleteCmd";
+            this.tsmDeleteCmd.Size = new System.Drawing.Size(190, 26);
+            this.tsmDeleteCmd.Text = "Delete Cmd List";
+            this.tsmDeleteCmd.Click += new System.EventHandler(this.tsmDeleteCmd_Click);
             // 
             // tsmShowDatabase
             // 
@@ -337,12 +347,20 @@
             this.btnExecute.UseVisualStyleBackColor = true;
             this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
             // 
-            // tsmDeleteCmd
+            // tsmDownload
             // 
-            this.tsmDeleteCmd.Name = "tsmDeleteCmd";
-            this.tsmDeleteCmd.Size = new System.Drawing.Size(190, 26);
-            this.tsmDeleteCmd.Text = "Delete Cmd List";
-            this.tsmDeleteCmd.Click += new System.EventHandler(this.tsmDeleteCmd_Click);
+            this.tsmDownload.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmPatternDownload});
+            this.tsmDownload.Name = "tsmDownload";
+            this.tsmDownload.Size = new System.Drawing.Size(90, 24);
+            this.tsmDownload.Text = "Download";
+            // 
+            // tsmPatternDownload
+            // 
+            this.tsmPatternDownload.Name = "tsmPatternDownload";
+            this.tsmPatternDownload.Size = new System.Drawing.Size(204, 26);
+            this.tsmPatternDownload.Text = "Pattern Download";
+            this.tsmPatternDownload.Click += new System.EventHandler(this.tsmPatternDownload_Click);
             // 
             // frmMain
             // 
@@ -408,5 +426,7 @@
         private System.Windows.Forms.Button btnEndCmd;
         private System.Windows.Forms.Button btnExecute;
         private System.Windows.Forms.ToolStripMenuItem tsmDeleteCmd;
+        private System.Windows.Forms.ToolStripMenuItem tsmDownload;
+        private System.Windows.Forms.ToolStripMenuItem tsmPatternDownload;
     }
 }

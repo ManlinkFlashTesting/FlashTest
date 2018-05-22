@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+
 
 namespace FlashTest
 {
@@ -23,9 +23,8 @@ namespace FlashTest
         BindingSource DeveiceTypeBS = new BindingSource();
         BindingSource AlgBS = new BindingSource();
 
-        private const int SendBufferSize = 8 * 1024;
-        private const int ReceiveBufferSize = 8 * 1024;
-
+        private const int SendBufferSize = 1 * 1024;
+        private const int ReceiveBufferSize = 1 * 1024;
         //private Boolean Ackflag = false;
         Socket socketClient = null;
         Thread threadClientRec = null;
@@ -84,7 +83,7 @@ namespace FlashTest
             ClientSendMsg(txtCMsg.Text.Trim(), 0);
             Thread.Sleep(10);
         }
-        private void btnExecute_Click(object sender, EventArgs e)
+        private void btnExecute_Click(object sender, EventArgs e)// send list commmand
         {
             if (dgvCmd.RowCount == 0) return;
             if (dgvCmd.CurrentRow.Index < dgvCmd.RowCount - 1)
@@ -100,16 +99,15 @@ namespace FlashTest
                 ClientSendMsg(currentCmd, 0);
                 dgvCmd.CurrentCell = dgvCmd.Rows[0].Cells[0];
             }
-            btnExecute.Enabled = false;
+            //btnExecute.Enabled = false;
             Thread.Sleep(10);
 
         }
-
-        private void btnEndCmd_Click(object sender, EventArgs e)
+        private void btnEndCmd_Click(object sender, EventArgs e)// end command execute, index back to 0
         {
             dgvCmd.CurrentCell = dgvCmd.Rows[0].Cells[0];
         }
-        private void txtCMsg_KeyDown(object sender, KeyEventArgs e)//快捷键 Enter 发送信息
+        private void txtCMsg_KeyDown(object sender, KeyEventArgs e)//Enter send message
         {   //当光标位于输入文本框上的情况下 发送信息的热键为回车键Enter 
             if (e.KeyCode == Keys.Enter)
             {
@@ -117,7 +115,7 @@ namespace FlashTest
                 ClientSendMsg(txtCMsg.Text, 0);
             }
         }
-        private void cboDeviceType_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboDeviceType_SelectedIndexChanged(object sender, EventArgs e)// update cmd data grid view when device type change
         {
             if (TypeFirstChangeFlag)
             {
@@ -126,7 +124,7 @@ namespace FlashTest
             }
             else TypeFirstChangeFlag = true;
         }
-        private void cboAlg_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboAlg_SelectedIndexChanged(object sender, EventArgs e)//upadte cmd data grid view when alg change
         {
             if (AlgFirstChangeFlag)
             {
@@ -141,7 +139,7 @@ namespace FlashTest
             frmAbout aboutbox = new frmAbout();
             aboutbox.ShowDialog();
         }
-        private void tsmImportCmd_Click(object sender, EventArgs e)
+        private void tsmImportCmd_Click(object sender, EventArgs e)// import cmd file to database
         {
 
             //1.select file
@@ -151,7 +149,7 @@ namespace FlashTest
             {
                 fullPath = openfile.FileName;//send the filename to global Variable
                 filename = Path.GetFileNameWithoutExtension(fullPath);
-                if (!IsValidUserName(filename))
+                if (!IsValidFileName(filename))
                 {
                     MessageBox.Show("File Name Only Contains [A-Za-z_0-9]", "System Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -186,6 +184,11 @@ namespace FlashTest
 
             //update device list and alg list
             LoadCmdToGrid();
+
+
+            //
+            GetStatus();
+
         }
         private void tsmExit_Click(object sender, EventArgs e)//close program
         {
@@ -209,14 +212,93 @@ namespace FlashTest
                 }
             }
         }
-        private void tsmDeleteCmd_Click(object sender, EventArgs e)
+        private void tsmDeleteCmd_Click(object sender, EventArgs e)//delete current combo device type
         {
             DeleteTable(cboDeviceType.SelectedValue.ToString());
             LoadCmdToGrid();
         }
+        private void tsmPatternDownload_Click(object sender, EventArgs e)//download pattern
+        {
+            //1.select file
+            OpenFileDialog openfile = new OpenFileDialog();
+            openfile.Filter = "TXT File(*.txt)|*.txt|CSV File(*.csv)|*.csv|All Files(*.*)|*.txt";
+            if (openfile.ShowDialog() == DialogResult.OK)
+            {
+                fullPath = openfile.FileName;//send the filename to global Variable
+                filename = Path.GetFileNameWithoutExtension(fullPath);
+                if (!IsValidFileName(filename))
+                {
+                    MessageBox.Show("File Name Only Contains [A-Za-z_0-9]", "System Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                int LineNum = 0;
+                string sendStr="";
+                //byte[] Sendpack = new Byte[1024];
+                foreach (string str in File.ReadAllLines(fullPath, Encoding.UTF8))
+                {
+                    LineNum++;
+                    String Hexstr = String.Format("{0:X2}", Convert.ToByte(str,2));
+                    if (LineNum%1024!=0)
+                    {
+                        sendStr = sendStr + Hexstr;
+                    }
+                    else
+                    {
+                        sendStr= sendStr+ Hexstr+ "FF";
+                        ClientSendMsg(sendStr, 1);
+                    }
+                }
+
+
+                // 用文件流打开用户要发送的文件；
+                ////using (FileStream fs = new FileStream(fullPath, FileMode.Open))
+                ////{
+
+                ////    txtMsg.AppendText(GetCurrentTime() + " Download Pattern " + filename + "\r\n");
+
+                ////    byte[] arrFile = ReadFully(fs);
+                ////    for (int i = 0; i < Math.Ceiling(arrFile.Length / 1023.0); i++)
+                ////    {
+                ////        int copyCount = 1023;
+                ////        if (copyCount*(i+1)> arrFile.Length)
+                ////        {
+                ////            copyCount = arrFile.Length - i  * 1023;
+                ////        }
+                ////        //byte[] arrFile = new byte[1024 * 1];
+                ////        byte[] arrFileSend = new byte[1024];
+                ////        arrFileSend[0] = 1; // 用来表示发送的是文件数据；
+                ////        Buffer.BlockCopy(arrFile, i * 1023, arrFileSend, 1, copyCount);
+                ////        // 还有一个 CopyTo的方法，但是在这里不适合； 当然还可以用for循环自己转化；
+                ////        socketClient.Send(arrFileSend);// 发送数据到服务端；
+                ////        respFlag = false;
+                ////        long waitCount = 0;
+                ////        while (respFlag == false)
+                ////        {
+                ////            Thread.Sleep(1);
+                ////            waitCount++;
+                ////            if (waitCount>=500)
+                ////            {
+                ////                respFlag = true;
+                ////                txtMsg.AppendText(GetCurrentTime() + "Server without response" + "\r\n");
+                ////                return;
+                ////            }
+                ////        }
+                ////    }
+                ////}
+            }
+        }
+
+        public static byte[] ReadFully(Stream input)
+        {
+            using (var ms = new MemoryStream())
+            {
+                input.CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
 
         //define user method
-        private List<string> ReadFileToList(string fullPath)// read file return student list
+        private List<string> ReadFileToList(string fullPath)// read file return line list
         {
             List<string> objList = new List<string>();
             string line = string.Empty;
@@ -265,7 +347,7 @@ namespace FlashTest
                 }
             }
         }
-        private void DeleteTable(string filename)// read file create database table
+        private void DeleteTable(string filename)// delete database table
         {
             using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
             {
@@ -281,9 +363,7 @@ namespace FlashTest
                 }
             }
         }
-
-
-        private Boolean CheckExistTable(string filename)// read file create database table
+        private Boolean CheckExistTable(string filename)// check if table exist
         {
             using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
             {
@@ -317,7 +397,7 @@ namespace FlashTest
                 }
             }
         }
-        private void InsertCmdRow(List<string> objListCmd, string filename)// read file return student list
+        private void InsertCmdRow(List<string> objListCmd, string filename)// insert one row to database list
         {
             using (SQLiteConnection conn = new SQLiteConnection(config.DataSource))
             {
@@ -360,8 +440,7 @@ namespace FlashTest
                 }
             }
         }
-
-        private void LoadCmdToGrid()
+        private void LoadCmdToGrid()//load device type and alg to combo
         {
             try
             {
@@ -406,7 +485,7 @@ namespace FlashTest
             }
 
         }
-        private void UpdateAlgList()
+        private void UpdateAlgList()//update alg combo list based on device type change
         {
             string queryString = cboDeviceType.SelectedValue.ToString();
             if (queryString != "")
@@ -442,7 +521,7 @@ namespace FlashTest
                 return;
             }
         }
-        private void GetStatus()
+        private void GetStatus()// load cmd to data grid view based on device type and alg
         {
             try
             {
@@ -481,9 +560,8 @@ namespace FlashTest
             }
         }
 
-
         //Tcp function
-        private void ConnectToServer()
+        private void ConnectToServer()//testing tcp connection
         {
             //定义一个套字节监听  包含3个参数(IP4寻址协议,流式连接,TCP协议)
             socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -501,17 +579,16 @@ namespace FlashTest
                 //启动线程
                 threadClientRec.Start();
 
-                txtMsg.AppendText("Connected server, start communication...\r\n");
+                ShowMsg("Connected server, start communication...");
             }
             catch (SocketException ex)
             {
                 btnExecute.Enabled = false;
-                txtMsg.AppendText("Socker error message:" + ex.Message + "\r\n");
+                ShowMsg("Socker error message:" + ex.Message );
             }
         }
-
         private delegate void InvokeCallback(string msg);
-        private void ShowMsg(string msg)
+        private void ShowMsg(string msg)//show meassage to txt box
         {
             if (txtMsg.InvokeRequired)
             {
@@ -522,10 +599,10 @@ namespace FlashTest
             else
             {
                 txtMsg.AppendText(msg + "\r\n");
-                btnExecute.Enabled = true;
+                //btnExecute.Enabled = true;
             }
         }
-        private void RecMsg()
+        private void RecMsg()// recieve tcp meassage 
         {
             string strRecMsg = null;
             string newMsg = null;
@@ -541,14 +618,13 @@ namespace FlashTest
                 }
                 catch (SocketException ex)
                 {
-                    txtMsg.AppendText("Socker error message:" + ex.Message + "\r\n");
-                    txtMsg.AppendText("Server disconnect...\r\n");
+                    ShowMsg("Socker error message:" + ex.Message);
+                    ShowMsg("Server disconnect...");
                     break;
-
                 }
                 catch (Exception ex)
                 {
-                    txtMsg.AppendText("System error message: " + ex.Message + "\r\n");
+                    ShowMsg("System error message: " + ex.Message);
                     break;
                 }
                 //将套接字获取到的字节数组转换为人可以看懂的字符串
@@ -568,15 +644,20 @@ namespace FlashTest
                 }
             }
         }
-
-        private void ClientSendMsg(string sendMsg, byte symbol)
+        private void ClientSendMsg(string sendMsg, byte symbol)//send textbox command  
         {
             if (sendMsg.Trim() == string.Empty) return;
             byte[] arrClientMsg = Encoding.UTF8.GetBytes(sendMsg);
             socketClient.Send(arrClientMsg);
-            txtMsg.AppendText(GetCurrentTime() + "  "+sendMsg + "\r\n");
+            if (symbol==0)
+            {
+                ShowMsg(GetCurrentTime() + "  " + sendMsg);
+            }
+            
         }
-        private void timer1_Tick(object sender, EventArgs e)
+
+        //commom function
+        private void timer1_Tick(object sender, EventArgs e)// update timer every second
         {
             tsslTime.Text = GetCurrentTime();
         }
@@ -586,12 +667,7 @@ namespace FlashTest
             string currentTime = dt.ToString("yyyy-MM-dd HH:mm:ss");
             return currentTime;
         }
-        /// <summary>
-        /// 检测用户名格式是否有效
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <returns></returns>
-        public static bool IsValidUserName(string filename)
+        public static bool IsValidFileName(string filename)//check the file name
         {
             if (Regex.IsMatch(filename, @"^([A-Za-z_0-9]{0,})$"))
             {   // 判断内容（只能是字母、下划线、数字）是否合法
@@ -602,5 +678,7 @@ namespace FlashTest
                 return false;
             }
         }
+
+
     }
 }
