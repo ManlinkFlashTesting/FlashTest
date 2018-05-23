@@ -19,6 +19,7 @@ namespace FlashTest
         public string filename = string.Empty;
         private Boolean TypeFirstChangeFlag = false;
         private Boolean AlgFirstChangeFlag = false;
+        private Boolean RecRespFlag = false;
 
         BindingSource DeveiceTypeBS = new BindingSource();
         BindingSource AlgBS = new BindingSource();
@@ -28,8 +29,9 @@ namespace FlashTest
         //private Boolean Ackflag = false;
         Socket socketClient = null;
         Thread threadClientRec = null;
+        Thread threadDownloadPat = null;
 
-        private List<string> objListCmd = new List<string>(); //define student info variable
+        private List<string> objListCmd = new List<string>(); //define cmd list info variable
 
         public frmMain()
         {
@@ -101,7 +103,6 @@ namespace FlashTest
             }
             ModifyButton(btnExecute, false);
             Thread.Sleep(1);
-
         }
         private void btnEndCmd_Click(object sender, EventArgs e)// end command execute, index back to 0
         {
@@ -132,6 +133,29 @@ namespace FlashTest
             }
             else AlgFirstChangeFlag = true;
         }
+        //textbox invoke
+        private delegate void InvokeCallback(string msg);
+        private void ShowMsg(string msg)//show meassage to txt box
+        {
+            if (txtMsg.InvokeRequired)
+            {
+                InvokeCallback msgCallback = new InvokeCallback(ShowMsg);
+                txtMsg.Invoke(msgCallback, new object[] { msg });
+
+            }
+            else
+            {
+                txtMsg.AppendText(msg + "\r\n");
+                ModifyButton(btnExecute, true);
+            }
+        }
+        //button invoke
+        private delegate void ModifyButton_dg(Button _btnName, bool _b);
+        private void ModifyButton(Button _btnName, bool _b)// enable or disable button
+        {
+            _btnName.Enabled = _b;
+        }
+
 
         //menu action
         private void tsmAbout_Click(object sender, EventArgs e)
@@ -219,9 +243,21 @@ namespace FlashTest
         }
         private void tsmPatternDownload_Click(object sender, EventArgs e)//download pattern
         {
+            //创建一个新线程 用于监听服务端发来的信息
+            threadDownloadPat = new Thread(DownloadPattern);
+            threadDownloadPat.SetApartmentState(ApartmentState.STA);
+            //将窗体线程设置为与后台同步
+            threadDownloadPat.IsBackground = true;
+            //启动线程
+            threadDownloadPat.Start();
+
+        }
+
+        private void DownloadPattern()
+        {
             //1.select file
             OpenFileDialog openfile = new OpenFileDialog();
-            openfile.Filter = "TXT File(*.txt)|*.txt|CSV File(*.csv)|*.csv|All Files(*.*)|*.txt";
+            openfile.Filter = "TXT File(*.txt)|*.txt";
             if (openfile.ShowDialog() == DialogResult.OK)
             {
                 fullPath = openfile.FileName;//send the filename to global Variable
@@ -231,71 +267,49 @@ namespace FlashTest
                     MessageBox.Show("File Name Only Contains [A-Za-z_0-9]", "System Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                int LineNum = 0;
-                string sendStr="";
-                //byte[] Sendpack = new Byte[1024];
-                foreach (string str in File.ReadAllLines(fullPath, Encoding.UTF8))
+                ShowMsg(GetCurrentTime() + " Start Download Pattern " + filename);
+                //用文件流打开用户要发送的文件；
+                using (FileStream fs = new FileStream(fullPath, FileMode.Open))
                 {
-                    LineNum++;
-                    String Hexstr = String.Format("{0:X2}", Convert.ToByte(str,2));
-                    if (LineNum%1024!=0)
+                    long fileLength = new FileInfo(fullPath).Length;
+                    StreamReader sr = new StreamReader(fs);
+                    int LineNum = 1;
+                    Boolean lastStrFlag = false;
+                    string line_s = "";
+                    string sendStr = "";
+                    while ((line_s = sr.ReadLine()) != null)
                     {
-                        sendStr = sendStr + Hexstr;
+                        String Hexstr = String.Format("{0:X2}", Convert.ToByte(line_s, 2));
+                        if (LineNum % 512 != 0)
+                        {
+                            lastStrFlag = true;
+                            sendStr = sendStr + Hexstr;
+                        }
+                        else
+                        {
+                            sendStr = sendStr + Hexstr + "FF";
+                            ClientSendMsg(sendStr, 1);
+                            sendStr = "";
+                            lastStrFlag = false;
+                            RecRespFlag = false;
+                        }
+                        while (!RecRespFlag)
+                        {
+                            Thread.Sleep(10);
+                        }
+                        LineNum++;
                     }
-                    else
+                    if (lastStrFlag == true)
                     {
-                        sendStr= sendStr+ Hexstr+ "FF";
+                        sendStr = sendStr  + "00";
                         ClientSendMsg(sendStr, 1);
+                        sendStr = "";
                     }
+                    ShowMsg(GetCurrentTime() + " Finished Download Pattern " + filename);
                 }
-
-
-                // 用文件流打开用户要发送的文件；
-                ////using (FileStream fs = new FileStream(fullPath, FileMode.Open))
-                ////{
-
-                ////    txtMsg.AppendText(GetCurrentTime() + " Download Pattern " + filename + "\r\n");
-
-                ////    byte[] arrFile = ReadFully(fs);
-                ////    for (int i = 0; i < Math.Ceiling(arrFile.Length / 1023.0); i++)
-                ////    {
-                ////        int copyCount = 1023;
-                ////        if (copyCount*(i+1)> arrFile.Length)
-                ////        {
-                ////            copyCount = arrFile.Length - i  * 1023;
-                ////        }
-                ////        //byte[] arrFile = new byte[1024 * 1];
-                ////        byte[] arrFileSend = new byte[1024];
-                ////        arrFileSend[0] = 1; // 用来表示发送的是文件数据；
-                ////        Buffer.BlockCopy(arrFile, i * 1023, arrFileSend, 1, copyCount);
-                ////        // 还有一个 CopyTo的方法，但是在这里不适合； 当然还可以用for循环自己转化；
-                ////        socketClient.Send(arrFileSend);// 发送数据到服务端；
-                ////        respFlag = false;
-                ////        long waitCount = 0;
-                ////        while (respFlag == false)
-                ////        {
-                ////            Thread.Sleep(1);
-                ////            waitCount++;
-                ////            if (waitCount>=500)
-                ////            {
-                ////                respFlag = true;
-                ////                txtMsg.AppendText(GetCurrentTime() + "Server without response" + "\r\n");
-                ////                return;
-                ////            }
-                ////        }
-                ////    }
-                ////}
             }
         }
 
-        public static byte[] ReadFully(Stream input)
-        {
-            using (var ms = new MemoryStream())
-            {
-                input.CopyTo(ms);
-                return ms.ToArray();
-            }
-        }
 
         //define user method
         private List<string> ReadFileToList(string fullPath)// read file return line list
@@ -470,7 +484,7 @@ namespace FlashTest
                         }
                         else
                         {
-                            DeveiceTypeBS.DataSource=null;
+                            DeveiceTypeBS.DataSource = null;
                             AlgBS.DataSource = null;
                             return;
                         }
@@ -552,7 +566,7 @@ namespace FlashTest
                     dgvCmd.DataSource = null;
                     return;
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -584,28 +598,8 @@ namespace FlashTest
             catch (SocketException ex)
             {
                 btnExecute.Enabled = false;
-                ShowMsg("Socker error message:" + ex.Message );
+                ShowMsg("Socker error message:" + ex.Message);
             }
-        }
-        private delegate void InvokeCallback(string msg);
-        private void ShowMsg(string msg)//show meassage to txt box
-        {
-            if (txtMsg.InvokeRequired)
-            {
-                InvokeCallback msgCallback = new InvokeCallback(ShowMsg);
-                txtMsg.Invoke(msgCallback, new object[] { msg });
-
-            }
-            else
-            {
-                txtMsg.AppendText(msg + "\r\n");
-                ModifyButton(btnExecute,true);
-            }
-        }
-        private delegate void ModifyButton_dg(Button _btnName, bool _b);
-        private void ModifyButton(Button _btnName, bool _b)// enable or disable button
-        {
-            _btnName.Enabled = _b;
         }
         private void RecMsg()// recieve tcp meassage 
         {
@@ -633,13 +627,14 @@ namespace FlashTest
                     break;
                 }
                 //将套接字获取到的字节数组转换为人可以看懂的字符串
-                strRecMsg = Encoding.UTF8.GetString(buffer,  0, length);
+                strRecMsg = Encoding.UTF8.GetString(buffer, 0, length);
 
                 //将文本框输入的信息附加到txtMsg中  并显示 谁,什么时间,换行,发送了什么信息 再换行
                 if (Regex.IsMatch(strRecMsg, @"\]$"))
                 {
-                    ShowMsg( newMsg+strRecMsg);
+                    ShowMsg(newMsg + strRecMsg);
                     newMsg = null;
+                    RecRespFlag = true;
                 }
 
                 else
@@ -654,11 +649,10 @@ namespace FlashTest
             if (sendMsg.Trim() == string.Empty) return;
             byte[] arrClientMsg = Encoding.UTF8.GetBytes(sendMsg);
             socketClient.Send(arrClientMsg);
-            if (symbol==0)
+            if (symbol == 0)
             {
                 ShowMsg(GetCurrentTime() + "  " + sendMsg);
             }
-            
         }
 
         //commom function
@@ -683,7 +677,5 @@ namespace FlashTest
                 return false;
             }
         }
-
-
     }
 }
