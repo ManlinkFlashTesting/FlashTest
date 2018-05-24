@@ -253,7 +253,7 @@ namespace FlashTest
 
         }
 
-        private void DownloadPattern()
+        private void DownloadPattern()//download pattern action
         {
             //1.select file
             OpenFileDialog openfile = new OpenFileDialog();
@@ -268,21 +268,20 @@ namespace FlashTest
                     return;
                 }
                 ShowMsg(GetCurrentTime() + " Start Download Pattern " + filename);
-                //用文件流打开用户要发送的文件；
+                //2.用文件流打开用户要发送的文件；
                 using (FileStream fs = new FileStream(fullPath, FileMode.Open))
                 {
-                    long fileLength = new FileInfo(fullPath).Length;
+                    long fileLength = new FileInfo(fullPath).Length;//read file size, 10bit for 1 line
                     StreamReader sr = new StreamReader(fs);
                     int LineNum = 1;
-                    Boolean lastStrFlag = false;
+
                     string line_s = "";
                     string sendStr = "";
-                    while ((line_s = sr.ReadLine()) != null)
+                    while ((line_s = sr.ReadLine()) != null)//read line by line
                     {
                         String Hexstr = String.Format("{0:X2}", Convert.ToByte(line_s, 2));
                         if (LineNum % 512 != 0)
                         {
-                            lastStrFlag = true;
                             sendStr = sendStr + Hexstr;
                         }
                         else
@@ -290,7 +289,6 @@ namespace FlashTest
                             sendStr = sendStr + Hexstr + "FF";
                             ClientSendMsg(sendStr, 1);
                             sendStr = "";
-                            lastStrFlag = false;
                             RecRespFlag = false;
                         }
                         while (!RecRespFlag)
@@ -299,12 +297,11 @@ namespace FlashTest
                         }
                         LineNum++;
                     }
-                    if (lastStrFlag == true)
-                    {
-                        sendStr = sendStr  + "00";
-                        ClientSendMsg(sendStr, 1);
-                        sendStr = "";
-                    }
+                    //send the remainder char and suffix
+                    sendStr = sendStr + "00";
+                    ClientSendMsg(sendStr, 1);
+                    sendStr = "";
+
                     ShowMsg(GetCurrentTime() + " Finished Download Pattern " + filename);
                 }
             }
