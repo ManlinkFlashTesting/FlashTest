@@ -19,7 +19,8 @@ namespace FlashTest
         public string filename = string.Empty;
         private Boolean TypeFirstChangeFlag = false;
         private Boolean AlgFirstChangeFlag = false;
-        private Boolean RecRespFlag = false;
+        private Boolean RecRespFlag = true;
+
 
         BindingSource DeveiceTypeBS = new BindingSource();
         BindingSource AlgBS = new BindingSource();
@@ -269,6 +270,7 @@ namespace FlashTest
                     return;
                 }
                 ShowMsg(GetCurrentTime() + " Start Download Pattern " + filename);
+
                 //2.用文件流打开用户要发送的文件；
                 using (FileStream fs = new FileStream(fullPath, FileMode.Open))
                 {
@@ -277,7 +279,7 @@ namespace FlashTest
                     int LineNum = 1;
 
                     string line_s = "";
-                    string sendStr = "";
+                    string sendStr = "!";
                     while ((line_s = sr.ReadLine()) != null)//read line by line
                     {
                         String Hexstr = String.Format("{0:X2}", Convert.ToByte(line_s, 2));
@@ -287,23 +289,22 @@ namespace FlashTest
                         }
                         else
                         {
-                            sendStr = sendStr + Hexstr + "FF";
+                            sendStr = sendStr + Hexstr + ";";
                             ClientSendMsg(sendStr, 1);
-                            sendStr = "";
+                            sendStr = "!";
                             RecRespFlag = false;
                             ShowMsg(GetCurrentTime() + " "+ filename+ " download " + string.Format("{0:P}", LineNum * 10.0 / fileLength));
                         }
                         while (!RecRespFlag)
                         {
-                            Thread.Sleep(10);
+                            Thread.Sleep(3);
                         }
                         LineNum++;
                     }
                     //send the remainder char and suffix
-                    sendStr = sendStr + "00";
+                    sendStr = sendStr + ";";
                     ClientSendMsg(sendStr, 1);
-                    sendStr = "";
-
+                    sendStr = "!";
                     ShowMsg(GetCurrentTime() + " Finished Download Pattern " + filename);
                 }
             }
@@ -626,13 +627,17 @@ namespace FlashTest
                 strRecMsg = Encoding.UTF8.GetString(buffer, 0, length);
 
                 //将文本框输入的信息附加到txtMsg中  并显示 谁,什么时间,换行,发送了什么信息 再换行
-                if (Regex.IsMatch(strRecMsg, @"\]$"))
+
+                if (Regex.IsMatch(strRecMsg, @"\~"))
+                {
+                    RecRespFlag = true;
+                    newMsg = null;
+                }
+                else if (Regex.IsMatch(strRecMsg, @"\]$"))
                 {
                     ShowMsg(newMsg + strRecMsg);
                     newMsg = null;
-                    RecRespFlag = true;
                 }
-
                 else
                 {
                     newMsg = newMsg + strRecMsg;
