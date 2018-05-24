@@ -253,6 +253,7 @@ namespace FlashTest
 
         }
 
+        //define user method
         private void DownloadPattern()//download pattern action
         {
             //1.select file
@@ -290,6 +291,7 @@ namespace FlashTest
                             ClientSendMsg(sendStr, 1);
                             sendStr = "";
                             RecRespFlag = false;
+                            ShowMsg(GetCurrentTime() + " "+ filename+ " download " + string.Format("{0:P}", LineNum * 10.0 / fileLength));
                         }
                         while (!RecRespFlag)
                         {
@@ -306,9 +308,6 @@ namespace FlashTest
                 }
             }
         }
-
-
-        //define user method
         private List<string> ReadFileToList(string fullPath)// read file return line list
         {
             List<string> objList = new List<string>();
@@ -651,6 +650,7 @@ namespace FlashTest
                 ShowMsg(GetCurrentTime() + "  " + sendMsg);
             }
         }
+        
 
         //commom function
         private void timer1_Tick(object sender, EventArgs e)// update timer every second
